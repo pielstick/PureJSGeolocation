@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Geo Location</title>
+    <script>
+        if (navigator.geolocation) {
+            window.navigator.geolocation.getCurrentPosition(success, console.error);
+        }
+
+         async function success(data) {
+            let apikey = "e3304b8c8bb14468a618708960c349c3";
+            let latitude = data.coords.latitude;
+            let longitude = data.coords.longitude;
+            let lat = document.getElementById('lat');
+            let long = document.getElementById('long');
+            let place = document.getElementById('place');
+            let info = document.getElementById('info');
+            lat.textContent = latitude;
+            long.textContent = longitude;
+
+             let response =  await fetch('https://api.opencagedata.com/geocode/v1/json'
+                + '?'
+                + 'key=' + apikey
+                + '&q=' + encodeURIComponent(latitude + ',' + longitude)
+                + '&pretty=1'
+                + '&no_annotations=1');
+             if (response.ok) {
+                 let json = await response.json();
+                 place.textContent = json.results[0].components.country;
+                 info.textContent = json.results[0].formatted;
+                 console.log(json.results[0]);
+             } else {
+                 console.log('error');
+             }
+
+        }
+    </script>
+</head>
+<body>
+<div id="location">
+    <label for="lat">Latitude</label>
+    <div id="lat"></div>
+    <label for="long">Longitude</label>
+    <div id="long"></div>
+    <label for="place">Country</label>
+    <div id="place"></div>
+    <label for="info">Full info</label>
+    <div id="info"></div>
+</div>
+</body>
+</html>
